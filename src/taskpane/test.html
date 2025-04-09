@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Word Save and PDF Add-in Test Page</title>
+
+    <!-- Office JavaScript API -->
+    <script type="text/javascript" src="https://appsforoffice.microsoft.com/lib/1.1/hosted/office.js"></script>
+
+    <!-- For more information on Fluent UI, visit https://developer.microsoft.com/fluentui -->
+    <link rel="stylesheet" href="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-core/11.0.0/css/fabric.min.css"/>
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 20px;
+            padding: 0;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .test-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .test-button {
+            margin: 5px;
+            padding: 8px 16px;
+            background-color: #0078d4;
+            color: white;
+            border: none;
+            border-radius: 2px;
+            cursor: pointer;
+        }
+        .test-button:hover {
+            background-color: #005a9e;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-radius: 2px;
+            min-height: 20px;
+        }
+        .success {
+            background-color: #dff6dd;
+        }
+        .error {
+            background-color: #fde7e9;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="test-container">
+        <h1>Word Save and PDF Add-in Test Page</h1>
+        <p>このページでは、Word Save and PDF Add-inの各機能をテストできます。</p>
+
+        <div class="test-section">
+            <h2>1. 環境情報</h2>
+            <button id="check-environment" class="test-button">環境情報を取得</button>
+            <div id="environment-result" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>2. ドキュメント保存機能テスト</h2>
+            <button id="test-save" class="test-button">保存機能をテスト</button>
+            <div id="save-result" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>3. PDF変換機能テスト</h2>
+            <button id="test-pdf" class="test-button">PDF変換をテスト</button>
+            <div id="pdf-result" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>4. クリップボード機能テスト</h2>
+            <button id="test-clipboard" class="test-button">クリップボードをテスト</button>
+            <div id="clipboard-result" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>5. 統合テスト</h2>
+            <button id="test-all" class="test-button">すべての機能をテスト</button>
+            <div id="all-result" class="result"></div>
+        </div>
+    </div>
+
+    <script>
+        Office.onReady((info) => {
+            if (info.host === Office.HostType.Word) {
+                document.getElementById("check-environment").onclick = checkEnvironment;
+                document.getElementById("test-save").onclick = testSave;
+                document.getElementById("test-pdf").onclick = testPDF;
+                document.getElementById("test-clipboard").onclick = testClipboard;
+                document.getElementById("test-all").onclick = testAll;
+            }
+        });
+
+        async function checkEnvironment() {
+            try {
+                const result = document.getElementById("environment-result");
+                result.innerHTML = "環境情報を取得中...";
+                
+                const envInfo = {
+                    host: Office.context.host,
+                    platform: Office.context.platform,
+                    version: Office.context.diagnostics.version,
+                    browser: navigator.userAgent,
+                    clipboardSupport: navigator.clipboard ? "サポート" : "未サポート"
+                };
+                
+                result.innerHTML = "<pre>" + JSON.stringify(envInfo, null, 2) + "</pre>";
+                result.className = "result success";
+            } catch (error) {
+                document.getElementById("environment-result").innerHTML = "エラー: " + error.message;
+                document.getElementById("environment-result").className = "result error";
+            }
+        }
+
+        async function testSave() {
+            try {
+                const result = document.getElementById("save-result");
+                result.innerHTML = "ドキュメント保存をテスト中...";
+                
+                // Test document save functionality
+                await new Promise((resolve, reject) => {
+                    Office.context.document.save((saveResult) => {
+                        if (saveResult.status === Office.AsyncResultStatus.Succeeded) {
+                            resolve();
+                        } else {
+                            reject(new Error(saveResult.error.message));
+                        }
+                    });
+                });
+                
+                result.innerHTML = "ドキュメント保存テスト成功！";
+                result.className = "result success";
+            } catch (error) {
+                document.getElementById("save-result").innerHTML = "エラー: " + error.message;
+                document.getElementById("save-result").className = "result error";
+            }
+        }
+
+        async function testPDF() {
+            try {
+                const result = document.getElementById("pdf-result");
+                result.innerHTML = "PDF変換をシミュレート中...";
+                
+                // Simulate PDF conversion (since we can't actually do it in the test environment)
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
+                result.innerHTML = "PDF変換シミュレーション成功！<br><small>注: 実際の変換は本番環境でAdobe PDF Services APIを使用して行われます。</small>";
+                result.className = "result success";
+            } catch (error) {
+                document.getElementById("pdf-result").innerHTML = "エラー: " + error.message;
+                document.getElementById("pdf-result").className = "result error";
+            }
+        }
+
+        async function testClipboard() {
+            try {
+                const result = document.getElementById("clipboard-result");
+                result.innerHTML = "クリップボード機能をテスト中...";
+                
+                const textToCopy = "これはクリップボードテストです。";
+                
+                // Try to use the clipboard API if available
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    try {
+                        await navigator.clipboard.writeText(textToCopy);
+                        result.innerHTML = "Clipboard API を使用してコピー成功！";
+                        result.className = "result success";
+                        return;
+                    } catch (clipboardError) {
+                        result.innerHTML = "Clipboard API 失敗: " + clipboardError.message + "<br>execCommandを試行中...";
+                    }
+                }
+                
+                // Fall back to the deprecated execCommand method
+                const textArea = document.createElement("textarea");
+                textArea.value = textToCopy;
+                textArea.style.position = "fixed";
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                
+                try {
+                    const successful = document.execCommand('copy');
+                    if (successful) {
+                        result.innerHTML = "execCommand を使用してコピー成功！";
+                        result.className = "result success";
+                    } else {
+                        result.innerHTML = "execCommand コピー失敗";
+                        result.className = "result error";
+                    }
+                } catch (err) {
+                    result.innerHTML = "execCommand エラー: " + err.message;
+                    result.className = "result error";
+                }
+                
+                document.body.removeChild(textArea);
+            } catch (error) {
+                document.getElementById("clipboard-result").innerHTML = "エラー: " + error.message;
+                document.getElementById("clipboard-result").className = "result error";
+            }
+        }
+
+        async function testAll() {
+            try {
+                const result = document.getElementById("all-result");
+                result.innerHTML = "すべての機能をテスト中...";
+                
+                // Test save
+                await testSave();
+                
+                // Test PDF conversion
+                await testPDF();
+                
+                // Test clipboard
+                await testClipboard();
+                
+                result.innerHTML = "統合テスト完了！";
+                result.className = "result success";
+            } catch (error) {
+                document.getElementById("all-result").innerHTML = "エラー: " + error.message;
+                document.getElementById("all-result").className = "result error";
+            }
+        }
+    </script>
+</body>
+</html>

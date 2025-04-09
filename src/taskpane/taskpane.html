@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Word Save and PDF Add-in</title>
+
+    <!-- Office JavaScript API -->
+    <script type="text/javascript" src="https://appsforoffice.microsoft.com/lib/1.1/hosted/office.js"></script>
+
+    <!-- For more information on Fluent UI, visit https://developer.microsoft.com/fluentui -->
+    <link rel="stylesheet" href="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-core/11.0.0/css/fabric.min.css"/>
+
+    <!-- Template styles -->
+    <link href="taskpane.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body class="ms-font-m ms-Fabric">
+    <header class="ms-welcome__header ms-bgColor-neutralLighter">
+        <img width="90" height="90" src="../../assets/logo-filled.png" alt="Word Save and PDF" title="Word Save and PDF" />
+        <h1 class="ms-font-su">Word Save and PDF</h1>
+    </header>
+    <section id="main-content" class="ms-welcome__main">
+        <h2 class="ms-font-xl">Save your document and create PDF with one click</h2>
+        <div class="ms-welcome__features">
+            <p class="ms-font-m">This add-in helps you:</p>
+            <ul class="ms-List">
+                <li class="ms-ListItem">
+                    <span class="ms-ListItem-primaryText">Save your current Word document</span>
+                </li>
+                <li class="ms-ListItem">
+                    <span class="ms-ListItem-primaryText">Create a PDF version of your document</span>
+                </li>
+                <li class="ms-ListItem">
+                    <span class="ms-ListItem-primaryText">Copy both files to clipboard (where supported)</span>
+                </li>
+            </ul>
+        </div>
+        <div class="ms-welcome__action">
+            <button id="save-pdf-button" class="ms-Button ms-Button--hero ms-font-xl">
+                <span class="ms-Button-label">Save & Create PDF</span>
+            </button>
+        </div>
+        <div id="status-message" class="ms-MessageBar ms-MessageBar--success" style="display: none;">
+            <div class="ms-MessageBar-content">
+                <div class="ms-MessageBar-text"></div>
+            </div>
+        </div>
+    </section>
+    <script type="text/javascript" src="taskpane.js"></script>
+</body>
+</html>
